@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>元素芝士 · 账号进度跟踪表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #c9b28b;
+            background-image: radial-gradient(circle at 25% 40%, rgba(200, 170, 120, 0.2) 2%, transparent 2.5%);
+            background-size: 32px 32px;
+            font-family: 'Segoe UI', 'Roboto', 'Georgia', 'Times New Roman', '华文楷书', 'Microsoft YaHei', serif;
+            min-height: 100vh;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cheese-wrapper {
+            max-width: 1900px;
+            width: 100%;
+            background: #fff9ef;
+            background-image: radial-gradient(circle at 15% 30%, rgba(255, 235, 170, 0.5) 2%, transparent 2.2%),
+                              radial-gradient(circle at 85% 70%, rgba(235, 200, 120, 0.4) 1.8%, transparent 2%);
+            background-size: 38px 38px, 28px 28px;
+            border-radius: 48px 36px 56px 40px;
+            box-shadow: 0 28px 42px -14px rgba(55, 38, 18, 0.5), inset 0 1px 3px rgba(255, 245, 200, 0.9);
+            padding: 1.5rem 1.8rem 2rem 1.8rem;
+            border: 1px solid #efdfb7;
+            transition: all 0.2s ease;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 0 0.2rem 0.8rem 0.2rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px dashed #e7cf8c;
+            position: relative;
+        }
+        .title-section::before,
+        .title-section::after {
+            content: "";
+            position: absolute;
+            background: #e2cb99;
+            border-radius: 50%;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .title-section::before {
+            width: 20px;
+            height: 20px;
+            bottom: -10px;
+            left: 12%;
+            background: #dbbb7a;
+            box-shadow: 45px -12px 0 2px #e7c990, -30px -8px 0 1px #e1bf7c, 120px 4px 0 1px #e9cf91;
+        }
+        .title-section::after {
+            width: 14px;
+            height: 14px;
+            right: 18%;
+            top: -6px;
+            background: #e2be7a;
+            box-shadow: -70px 12px 0 0 #e3c482, 90px 20px 0 0 #dcb66b, -30px 28px 0 1px #e0bb78;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(145deg, #b77e3c, #f3cd8a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 8px rgba(120, 70, 20, 0.15);
+            letter-spacing: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h1::before {
+            content: "🧀";
+            font-size: 2rem;
+            background: none;
+            text-shadow: none;
+            color: #e7b553;
+        }
+        .sub {
+            color: #a8743a;
+            background: #fff1da;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid #eedbaa;
+        }
+
+        .page-switch-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+        .page-btn {
+            background: #f4e5cf;
+            border: 1px solid #e2caa0;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #8b5a2e;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .page-btn.active {
+            background: #ddb56b;
+            color: #2f1e0c;
+            border-color: #eecd9a;
+        }
+        .page-btn:hover {
+            background: #eedbb9;
+            border-color: #c9a86b;
+        }
+
+        .top-control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .music-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 245, 225, 0.9);
+            padding: 5px 18px 5px 16px;
+            border-radius: 48px;
+            border: 1px solid #e6cf9e;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .music-btn {
+            background: #f4e5cf;
+            border: 1px solid #e2caa0;
+            padding: 6px 18px;
+            border-radius: 36px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b5a2e;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .music-btn:hover {
+            background: #eedbb9;
+            border-color: #c9a86b;
+            transform: scale(0.97);
+        }
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .volume-control label {
+            font-size: 11px;
+            color: #aa8048;
+            font-weight: 500;
+        }
+        .volume-slider {
+            width: 80px;
+            cursor: pointer;
+            accent-color: #c29a5a;
+        }
+        .music-status {
+            font-size: 11px;
+            color: #c2833b;
+            background: rgba(255, 248, 235, 0.9);
+            padding: 4px 14px;
+            border-radius: 32px;
+            font-weight: 500;
+            border: 1px solid #eedbaa;
+            white-space: nowrap;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .reset-btn, .add-row-btn, .export-btn, .import-btn {
+            background: #f4e5cf;
+            border: 1px solid #e2caa0;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b5a2e;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .reset-btn:hover, .add-row-btn:hover, .export-btn:hover, .import-btn:hover {
+            background: #eedbb9;
+            border-color: #c9a86b;
+            transform: scale(0.98);
+        }
+        .delete-row-btn {
+            background: #ffe6db;
+            border-color: #eccfaa;
+            color: #b45a2e;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .delete-row-btn:hover {
+            background: #ffd9c7;
+            border-color: #d69c5c;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 28px;
+            background: #fdf6e6;
+            padding: 4px;
+            box-shadow: inset 0 0 0 2px #fffae8, 0 10px 24px rgba(0, 0, 0, 0.08);
+            margin-top: 0.3rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 12px;
+            font-family: inherit;
+            min-width: 1500px;
+            background: #fffcf0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #eedfc0;
+            padding: 8px 6px;
+            vertical-align: middle;
+            text-align: center;
+            transition: background 0.1s ease;
+        }
+
+        th {
+            background: #f7efdb;
+            color: #6f4a27;
+            font-weight: 700;
+            border-bottom: 2px solid #e8cf98;
+            letter-spacing: 0.3px;
+            font-size: 12px;
+            padding: 10px 5px;
+        }
+
+        .category-main {
+            background: #efe2c6;
+            color: #5d3e1e;
+            font-size: 0.8rem;
+            font-weight: 650;
+        }
+
+        td {
+            background-color: #fffcf2;
+            color: #3f2d1a;
+            border-bottom: 1px solid #f2e3c2;
+        }
+
+        tr:hover td {
+            background-color: #fff8e9;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            font-size: 14px;
+            user-select: none;
+            display: inline-block;
+            width: 24px;
+            text-align: center;
+            color: #b88a54;
+            transition: all 0.1s;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        .drag-handle.dragging {
+            opacity: 0.5;
+        }
+        .drag-over-top {
+            border-top: 3px solid #c29a5a;
+            position: relative;
+        }
+        .drag-over-bottom {
+            border-bottom: 3px solid #c29a5a;
+            position: relative;
+        }
+
+        .editable-input {
+            width: 100%;
+            min-width: 70px;
+            border: 1px transparent;
+            background: transparent;
+            font-size: 12px;
+            font-family: inherit;
+            text-align: center;
+            padding: 5px 4px;
+            border-radius: 20px;
+            transition: all 0.2s;
+            color: #3f2d1a;
+            cursor: text;
+        }
+        .editable-input:focus {
+            outline: none;
+            border-color: #c29a5a;
+            background-color: #fffef5;
+            box-shadow: 0 0 0 2px rgba(194, 154, 90, 0.2);
+        }
+        .editable-input:hover:not(:focus) {
+            background-color: #fef7e8;
+            border-color: #e2cfaa;
+        }
+
+        .task-toggle-btn {
+            display: inline-block;
+            width: 100%;
+            min-width: 75px;
+            padding: 5px 8px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: inherit;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            background: transparent;
+            user-select: none;
+        }
+        .task-toggle-btn.completed {
+            background: #d4e8c5;
+            color: #3c6e2f;
+            border-color: #bddb9a;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .task-toggle-btn.completed:hover {
+            background: #c5dfb0;
+            transform: scale(0.96);
+        }
+        .task-toggle-btn.incomplete {
+            background: #f7e8d9;
+            color: #b87a4a;
+            border-color: #e8cfaa;
+        }
+        .task-toggle-btn.incomplete:hover {
+            background: #f0dfcb;
+            transform: scale(0.96);
+        }
+
+        .stat-cell {
+            background-color: #f5edda;
+            font-weight: 700;
+            color: #8b5a2e;
+            text-align: center;
+            min-width: 70px;
+            font-size: 12px;
+        }
+
+        .subnote {
+            font-size: 10px;
+            color: #aa8048;
+            margin-top: 20px;
+            text-align: center;
+            border-top: 1px dashed #eedbaa;
+            padding-top: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+        .subnote span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-editable {
+            width: 100%;
+            border: 1px solid #e2cfaa;
+            background: #fffbf0;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            padding: 5px 6px;
+            border-radius: 24px;
+            font-family: inherit;
+            color: #5a3a1f;
+            transition: all 0.2s;
+        }
+        .status-editable:focus {
+            outline: none;
+            border-color: #c29a5a;
+            background-color: #fffef5;
+            box-shadow: 0 0 0 2px rgba(194, 154, 90, 0.15);
+        }
+
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+            background: #efe2c6;
+            border-radius: 10px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #c9a86b;
+            border-radius: 10px;
+        }
+
+        .daily-container {
+            display: none;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .daily-wrapper {
+            display: flex;
+            gap: 24px;
+            width: 100%;
+        }
+        .daily-left, .daily-right {
+            flex: 1;
+            background: #fff9ef;
+            border-radius: 24px;
+            padding: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border: 1px solid #efdfb7;
+        }
+        .daily-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #b77e3c;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #e7cf8c;
+        }
+        .daily-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .daily-column {
+            background: #fffcf0;
+            border-radius: 16px;
+            padding: 10px;
+            border: 1px solid #eedfc0;
+        }
+        .column-header {
+            text-align: center;
+            padding: 6px 0;
+            background: #f7efdb;
+            border-radius: 12px;
+            font-weight: 700;
+            color: #6f4a27;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .account-item {
+            background: #fdf6e6;
+            border: 1px solid #eedfc0;
+            border-radius: 12px;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.2s;
+            font-size: 12px;
+            color: #3f2d1a;
+            user-select: none;
+            position: relative;
+        }
+        .account-item:active {
+            cursor: grabbing;
+        }
+        .account-item:hover {
+            background: #fff0d7;
+            border-color: #e2caa0;
+            transform: scale(0.98);
+        }
+        .daily-add-btn {
+            width: 100%;
+            background: #f4e5cf;
+            border: 1px solid #e2caa0;
+            border-radius: 12px;
+            padding: 6px;
+            font-size: 12px;
+            color: #8b5a2e;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: all 0.2s;
+        }
+        .daily-add-btn:hover {
+            background: #eedbb9;
+            border-color: #c9a86b;
+        }
+        .daily-input {
+            width: 100%;
+            border: 1px solid #eedfc0;
+            border-radius: 8px;
+            padding: 4px 6px;
+            font-size: 12px;
+            text-align: center;
+            background: #fff;
+            outline: none;
+            margin-bottom: 4px;
+        }
+        .daily-input:focus {
+            border-color: #c29a5a;
+        }
+
+        .daily-template-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .daily-template-btn {
+            background: #f4e5cf;
+            border: 1px solid #e2caa0;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b5a2e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .daily-template-btn:hover {
+            background: #eedbb9;
+            border-color: #c9a86b;
+        }
+
+        .account-item.drag-over-top { border-top: 2px solid #c29a5a; }
+        .account-item.drag-over-bottom { border-bottom: 2px solid #c29a5a; }
+
+        @media (max-width: 760px) {
+            body { padding: 0.6rem; }
+            .cheese-wrapper { padding: 1rem; }
+            h1 { font-size: 1.4rem; }
+            .music-area { padding: 4px 12px; }
+            .music-status { font-size: 10px; white-space: normal; }
+            .action-buttons { justify-content: center; }
+            .task-toggle-btn { font-size: 10px; padding: 4px 6px; min-width: 60px; }
+            .drag-handle { font-size: 12px; width: 20px; }
+            .daily-wrapper { flex-direction: column; gap: 16px; }
+        }
+
+        .cheese-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(70, 45, 20, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Roboto', 'Georgia', 'Times New Roman', '华文楷书', 'Microsoft YaHei', serif;
+            transition: all 0.25s ease;
+        }
+        .cheese-modal.active {
+            display: flex;
+            animation: fadeInModal 0.2s ease-out;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(5px); }
+        }
+        .modal-card {
+            background: #fffaf0;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 240, 190, 0.4) 1.5%, transparent 2%);
+            background-size: 28px 28px;
+            border-radius: 56px;
+            width: 90%;
+            max-width: 460px;
+            box-shadow: 0 30px 45px -18px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,250,210,0.8);
+            border: 1px solid #f3e3bc;
+            transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transform: scale(0.96);
+        }
+        .cheese-modal.active .modal-card {
+            transform: scale(1);
+        }
+        .modal-header {
+            padding: 1.2rem 1.8rem 0.5rem 1.8rem;
+            border-bottom: 2px dashed #ecdcaa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #b77a3c, #e5bc7a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-header h3::before {
+            content: "🧀";
+            font-size: 1.7rem;
+        }
+        .close-modal {
+            background: #f2e4ce;
+            border: 1px solid #e2ca9a;
+            width: 32px;
+            height: 32px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            color: #9b6e3e;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .close-modal:hover {
+            background: #e7d3b0;
+            transform: rotate(90deg);
+            color: #7b4a24;
+        }
+        .modal-body {
+            padding: 1.8rem 2rem 1.2rem 2rem;
+        }
+        .input-group {
+            margin-bottom: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .input-group label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #926f42;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .input-group label i {
+            font-style: normal;
+            font-size: 1rem;
+        }
+        .cheese-input, .cheese-select {
+            background: #fffef7;
+            border: 1.5px solid #eedbad;
+            border-radius: 60px;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            color: #4e341c;
+            outline: none;
+            width: 100%;
+        }
+        .cheese-input:focus, .cheese-select:focus {
+            border-color: #d6ad6e;
+            box-shadow: 0 0 0 3px rgba(214, 173, 110, 0.2);
+            background: #ffffff;
+        }
+        .radio-group {
+            display: flex;
+            gap: 18px;
+            background: #fff2e2;
+            padding: 12px 16px;
+            border-radius: 60px;
+            border: 1px solid #eedbad;
+            flex-wrap: wrap;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #7b5838;
+        }
+        .radio-option input {
+            accent-color: #cb9a5a;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .modal-footer {
+            padding: 0.8rem 2rem 1.8rem 2rem;
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+        .modal-btn {
+            padding: 8px 26px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .btn-cancel {
+            background: #f2e4d2;
+            color: #8d623b;
+            border: 1px solid #e2caa0;
+        }
+        .btn-cancel:hover {
+            background: #e7d4bc;
+            transform: scale(0.96);
+        }
+        .btn-confirm {
+            background: #ddb56b;
+            color: #2f1e0c;
+            border: 1px solid #eecd9a;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .btn-confirm:hover {
+            background: #cea358;
+            transform: scale(0.96);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .error-message {
+            font-size: 10px;
+            color: #cc7a45;
+            margin-top: 4px;
+            margin-left: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #6f4a27;
+            color: #fff9ef;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 2100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+            pointer-events: none;
+            animation: fadeOutToast 2s forwards;
+        }
+        @keyframes fadeOutToast {
+            0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-50%) translateY(10px); visibility: hidden; }
+        }
+        .import-file-input {
+            display: none;
+        }
+
+        .daily-add-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .daily-add-modal.show {
+            display: flex;
+        }
+        .daily-add-box {
+            background: #fff9ef;
+            width: 340px;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .daily-add-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #b77e3c;
+            margin-bottom: 16px;
+        }
+        .daily-add-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid #e2caa0;
+            margin-bottom: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+        .daily-add-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .daily-add-btn-modal {
+            padding: 10px 20px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .daily-add-cancel {
+            background: #f0f0f0;
+            color: #666;
+        }
+        .daily-add-ok {
+            background: #ddb56b;
+            color: #fff;
+        }
+        .del-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            background: #ff6b6b;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 10px;
+            line-height: 18px;
+            text-align: center;
+            cursor: pointer;
+            display: none;
+        }
+        .account-item:hover .del-btn {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="cheese-wrapper">
+    <div class="title-section">
+        <h1>元素芝士，启动！</h1>
+        <div class="sub">🧀 周通账号进度</div>
+    </div>
+
+    <div class="page-switch-bar">
+        <button class="page-btn active" data-page="zhou">周通区</button>
+        <button class="page-btn" data-page="daily">日常区</button>
+    </div>
+
+    <div class="top-control-bar">
+        <div class="music-area">
+            <button id="toggleMusicBtn" class="music-btn">🔊 暂停</button>
+            <div class="volume-control">
+                <label>🎵 音量</label>
+                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="45">
+                <span id="volumeValue" style="font-size: 10px; color: #aa8048; min-width: 32px;">45%</span>
+            </div>
+            <div class="music-status" id="musicStatusText">🎆 夏·烟火 · LIKPIA</div>
+        </div>
+        <div class="action-buttons">
+            <button id="addNewRowBtn" class="add-row-btn">➕ 添加新账号</button>
+            <button id="exportDataBtn" class="export-btn">📤 导出数据</button>
+            <button id="importDataBtn" class="import-btn">📥 导入数据</button>
+            <input type="file" id="importFileInput" class="import-file-input" accept=".json">
+            <button id="resetAllProgressBtn" class="reset-btn">🔄 重置所有进度</button>
+        </div>
+    </div>
+
+    <div class="table-container" id="zhouPage">
+        <table id="progressTable">
+            <thead id="tableHeader"></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="daily-container" id="dailyPage">
+        <div class="daily-template-bar">
+            <button class="daily-template-btn" id="saveDailyTemplate">💾 保存当前为模板</button>
+            <button class="daily-template-btn" id="loadDailyTemplate">🔄 一键还原模板</button>
+        </div>
+        <div class="daily-wrapper">
+            <div class="daily-left">
+                <div class="daily-title">🧀 一车</div>
+                <div class="daily-grid" id="dailyLeftGrid"></div>
+            </div>
+            <div class="daily-right">
+                <div class="daily-title">✅ 二车</div>
+                <div class="daily-grid" id="dailyRightGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="subnote">
+        <span>🧀 元素芝士 · 周通日志 | 支持手动添加/删除行</span>
+        <span>✅ 状态/职业/账号ID 点击编辑 | ✨ 任务状态点击切换（已完成/未完成）</span>
+        <span>🖱️ 拖动 ⋮⋮ 可在同分类内调整顺序</span>
+        <span>💾 导出JSON备份分享（含完整进度） | 导入恢复全部数据 | 自动保存在浏览器</span>
+        <span>📅 日常区每日0点自动还原 | 支持上下拖动</span>
+    </div>
+</div>
+
+<div id="addAccountModal" class="cheese-modal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>✨ 新芝士之力 · 添加账号</h3>
+            <div class="close-modal" id="closeModalBtn">✕</div>
+        </div>
+        <div class="modal-body">
+            <div class="input-group">
+                <label><i>📂</i> 账号分类</label>
+                <div class="radio-group" id="statusRadioGroup">
+                    <label class="radio-option"><input type="radio" name="accountStatus" value="主号" checked> 🧀 主号</label>
+                    <label class="radio-option"><input type="radio" name="accountStatus" value="副号"> 🧀 副号</label>
+                    <label class="radio-option"><input type="radio" name="accountStatus" value="搬砖号"> 🧀 搬砖号</label>
+                </div>
+            </div>
+            <div class="input-group">
+                <label><i>⚔️</i> 职业 (c / n / t 或自定)</label>
+                <input type="text" id="jobInput" class="cheese-input" placeholder="例: c / n / t / 辅助" value="?">
+            </div>
+            <div class="input-group">
+                <label><i>🆔</i> 账号ID / 昵称</label>
+                <input type="text" id="accountInput" class="cheese-input" placeholder="起个响当当的名字" value="新角色">
+            </div>
+            <div id="modalError" class="error-message"></div>
+        </div>
+        <div class="modal-footer">
+            <button id="modalCancelBtn" class="modal-btn btn-cancel">🍃 取消</button>
+            <button id="modalConfirmBtn" class="modal-btn btn-confirm">✅ 确认添加</button>
+        </div>
+    </div>
+</div>
+
+<div id="dailyAddModal" class="daily-add-modal">
+    <div class="daily-add-box">
+        <div class="daily-add-title">🧀 添加日常账号</div>
+        <input type="text" id="dailyAddInput" class="daily-add-input" placeholder="请输入账号名称">
+        <div class="daily-add-btns">
+            <button class="daily-add-btn-modal daily-add-cancel" id="dailyAddCancel">取消</button>
+            <button class="daily-add-btn-modal daily-add-ok" id="dailyAddOk">确认添加</button>
+        </div>
+    </div>
+</div>
+
+<audio id="bgMusic" loop preload="auto">
+    <source src="https://music.163.com/song/media/outer/url?id=539428072.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_8c6c5b3f2a.mp3?filename=summer-evening-112431.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const bgMusic = document.getElementById('bgMusic');
+    const toggleBtn = document.getElementById('toggleMusicBtn');
+    const musicStatusText = document.getElementById('musicStatusText');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    let isPlaying = false;
+    let userInteracted = false;
+    bgMusic.volume = 0.45;
+    volumeSlider.value = 45;
+    volumeValue.textContent = '45%';
+    volumeSlider.addEventListener('input', function(e) {
+        const vol = e.target.value / 100;
+        bgMusic.volume = vol;
+        volumeValue.textContent = e.target.value + '%';
+        localStorage.setItem('summerFireworksVolume', e.target.value);
+    });
+    const savedVol = localStorage.getItem('summerFireworksVolume');
+    if (savedVol !== null) {
+        volumeSlider.value = savedVol;
+        bgMusic.volume = savedVol / 100;
+        volumeValue.textContent = savedVol + '%';
+    }
+    function updateMusicUI() {
+        if (isPlaying) {
+            toggleBtn.innerHTML = '🔇 暂停';
+            toggleBtn.style.background = '#eedbb9';
+            musicStatusText.innerHTML = '🎆 夏·烟火 · 宁静流淌';
+        } else {
+            toggleBtn.innerHTML = '🔊 播放音乐';
+            toggleBtn.style.background = '#f4e5cf';
+            musicStatusText.innerHTML = '🎆 夏·烟火 · 已暂停';
+        }
+    }
+    function playMusic() {
+        bgMusic.play().then(() => {
+            isPlaying = true;
+            updateMusicUI();
+            musicStatusText.innerHTML = '🎆 夏·烟火 · 夏日意境';
+        }).catch(() => {
+            isPlaying = false;
+            updateMusicUI();
+            musicStatusText.innerHTML = '🎆 夏·烟火 - 点击播放';
+        });
+    }
+    function pauseMusic() { bgMusic.pause(); isPlaying = false; updateMusicUI(); }
+    function toggleMusic() { if (isPlaying) pauseMusic(); else playMusic(); }
+    toggleBtn.addEventListener('click', toggleMusic);
+    bgMusic.addEventListener('ended', () => { if (bgMusic.loop && isPlaying) bgMusic.play().catch(e=>{}); });
+    function startAutoPlay() {
+        bgMusic.play().then(() => { isPlaying = true; updateMusicUI(); userInteracted = true; musicStatusText.innerHTML = '🎆 夏·烟火 · 夏日意境'; }).catch(() => {
+            musicStatusText.innerHTML = '🎆 夏·烟火 - 点击任意位置开启';
+            const startMusicOnInteraction = function() {
+                if (!isPlaying && !userInteracted) {
+                    bgMusic.play().then(() => { isPlaying = true; updateMusicUI(); musicStatusText.innerHTML = '🎆 夏·烟火 · 夏日意境'; userInteracted = true; }).catch(()=>{});
+                }
+                document.removeEventListener('click', startMusicOnInteraction);
+                document.removeEventListener('touchstart', startMusicOnInteraction);
+            };
+            document.addEventListener('click', startMusicOnInteraction);
+            document.addEventListener('touchstart', startMusicOnInteraction);
+        });
+    }
+    window.addEventListener('load', () => { bgMusic.loop = true; startAutoPlay(); });
+    updateMusicUI();
+
+    const TASK_COLS = 12;
+    const FIXED_COLS = 3;
+    const columnGroups = [
+        { name: "✨ 幻境", cols: ["融火", "森林"] },
+        { name: "🌳 树本", cols: ["树顶", "树底"] },
+        { name: "🐉 小一条", cols: ["火龙", "图书馆"] },
+        { name: "💀 灾厄", cols: ["噩灾", "深灾"] },
+        { name: "🌀 劫影", cols: ["噩劫", "深劫"] },
+        { name: "💎 新晶石本", cols: ["新晶石本"] },
+        { name: "🌊 深魔", cols: ["深魔"] }
+    ];
+    let taskData = [];
+    function createEmptyRow(status = "新账号", job = "?", account = "新角色") { return { status, job, account, tasks: Array(TASK_COLS).fill("未完成") }; }
+    const defaultRows = [
+        { status: "主号", job: "n", account: "当救不了主c", tasks: Array(TASK_COLS).fill("未完成") },
+        { status: "主号", job: "n", account: "画画的旅行", tasks: Array(TASK_COLS).fill("未完成") },
+        { status: "主号", job: "c", account: "有一说一", tasks: Array(TASK_COLS).fill("未完成") },
+        { status: "主号", job: "c", account: "海hai", tasks: Array(TASK_COLS).fill("未完成") },
+        { status: "主号", job: "c", account: "热爱可抵万难", tasks: Array(TASK_COLS).fill("未完成") },
+        { status: "副号", job: "t", account: "笨蛋画", tasks: Array(TASK_COLS).fill("未完成") },
+        { status: "搬砖号", job: "t", account: "倪煌", tasks: Array(TASK_COLS).fill("未完成") }
+    ];
+    function initData() { taskData = defaultRows.map(row => ({ ...row, tasks: [...row.tasks] })); }
+    initData();
+
+    const STORAGE_KEY = 'elementCheeseProgress_v10';
+    function saveToLocal() { localStorage.setItem(STORAGE_KEY, JSON.stringify(taskData)); }
+    function loadFromLocal() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            try { 
+                const parsed = JSON.parse(stored); 
+                if (Array.isArray(parsed) && parsed.length && parsed.every(r => r.tasks && r.tasks.length === TASK_COLS)) { 
+                    taskData = parsed; 
+                    return true; 
+                } 
+            } catch(e) {}
+        }
+        return false;
+    }
+    if (!loadFromLocal()) { 
+        taskData.forEach(row => { if(row.tasks.length !== TASK_COLS) row.tasks = Array(TASK_COLS).fill("未完成"); }); 
+        saveToLocal(); 
+    }
+
+    function reorderByStatusGroups() {
+        const groups = { "主号": [], "副号": [], "搬砖号": [], "其他": [] };
+        for (let r of taskData) {
+            if (r.status === "主号") groups["主号"].push(r);
+            else if (r.status === "副号") groups["副号"].push(r);
+            else if (r.status === "搬砖号") groups["搬砖号"].push(r);
+            else groups["其他"].push(r);
+        }
+        taskData = [...groups["主号"], ...groups["副号"], ...groups["搬砖号"], ...groups["其他"]];
+        saveToLocal();
+    }
+
+    function moveRowWithinGroup(fromIdx, toIdx) {
+        if (fromIdx === toIdx) return false;
+        if (taskData[fromIdx].status !== taskData[toIdx].status) {
+            showToast("⚠️ 不同分类（主号/副号/搬砖号）之间不可拖动，只能在同一分类内调整顺序", true);
+            return false;
+        }
+        const [movedRow] = taskData.splice(fromIdx, 1);
+        let newToIdx = toIdx;
+        if (fromIdx < toIdx) newToIdx = toIdx - 1;
+        taskData.splice(newToIdx, 0, movedRow);
+        saveToLocal();
+        renderFullTable();
+        showToast(`📌 已在「${movedRow.status}」分类内调整顺序`);
+        return true;
+    }
+
+    function addNewRowFromModal(status, job, account) {
+        const newRow = createEmptyRow(status, job.trim() !== "" ? job.trim() : "?", account.trim() !== "" ? account.trim() : "新角色");
+        let insertIndex = taskData.length;
+        for (let i = taskData.length - 1; i >= 0; i--) {
+            if (taskData[i].status === status) {
+                insertIndex = i + 1;
+                break;
+            }
+        }
+        if (insertIndex === taskData.length) {
+            const order = { "主号": 1, "副号": 2, "搬砖号": 3 };
+            const targetOrder = order[status] || 4;
+            for (let i = 0; i < taskData.length; i++) {
+                const currOrder = order[taskData[i].status] || 4;
+                if (currOrder > targetOrder) {
+                    insertIndex = i;
+                    break;
+                }
+            }
+        }
+        taskData.splice(insertIndex, 0, newRow);
+        saveToLocal();
+        renderFullTable();
+        showToast(`✅ 已添加「${status}」账号：${account}`);
+    }
+
+    function deleteRow(rowIdx) {
+        if (taskData.length <= 1) { showToast("⚠️ 至少保留一行数据，无法删除最后一行。", true); return; }
+        if (confirm(`确定要删除账号 "${taskData[rowIdx].account}" 的所有进度吗？`)) { 
+            taskData.splice(rowIdx, 1); 
+            saveToLocal(); 
+            renderFullTable(); 
+            showToast(`🗑️ 已删除账号`); 
+        }
+    }
+
+    function toggleTaskStatus(rowIdx, taskColIdx) {
+        if (taskData[rowIdx]?.tasks[taskColIdx] !== undefined) {
+            const currentStatus = taskData[rowIdx].tasks[taskColIdx];
+            const newStatus = currentStatus === "已完成" ? "未完成" : "已完成";
+            taskData[rowIdx].tasks[taskColIdx] = newStatus;
+            saveToLocal();
+            renderFullTable();
+        }
+    }
+
+    function updateJob(rowIdx, newValue) { 
+        if (taskData[rowIdx]) { 
+            taskData[rowIdx].job = newValue; 
+            saveToLocal(); 
+            renderFullTable(); 
+        } 
+    }
+    function updateAccount(rowIdx, newValue) { 
+        if (taskData[rowIdx]) { 
+            taskData[rowIdx].account = newValue; 
+            saveToLocal(); 
+            renderFullTable(); 
+        } 
+    }
+    function updateStatus(rowIdx, newValue) { 
+        if (taskData[rowIdx] && taskData[rowIdx].status !== newValue) { 
+            taskData[rowIdx].status = newValue; 
+            saveToLocal();
+            reorderByStatusGroups();
+            renderFullTable(); 
+            showToast(`状态已改为「${newValue}」`);
+        } 
+    }
+    function resetAllProgress() { 
+        for (let i=0;i<taskData.length;i++) 
+            for (let j=0;j<TASK_COLS;j++) 
+                taskData[i].tasks[j]="未完成"; 
+        saveToLocal(); 
+        renderFullTable(); 
+        showToast("🔄 所有任务进度已重置为未完成"); 
+    }
+
+    function exportData() {
+        const exportDataObj = {
+            version: "1.0",
+            exportTime: new Date().toISOString(),
+            taskColumns: TASK_COLS,
+            accounts: taskData,
+            dailyLeft: dailyLeftData,
+            dailyRight: dailyRightData
+        };
+        const dataStr = JSON.stringify(exportDataObj, null, 2);
+        const blob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `元素芝士_进度备份_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast(`📤 已导出 ${taskData.length} 个账号的完整进度数据`);
+    }
+
+    function importData(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedObj = JSON.parse(e.target.result);
+                let importedData = null;
+                if (Array.isArray(importedObj)) {
+                    importedData = importedObj;
+                } else if (importedObj.accounts && Array.isArray(importedObj.accounts)) {
+                    importedData = importedObj.accounts;
+                    if(importedObj.dailyLeft) dailyLeftData = importedObj.dailyLeft;
+                    if(importedObj.dailyRight) dailyRightData = importedObj.dailyRight;
+                    saveDailyToLocal();
+                } else {
+                    showToast(`❌ 文件格式不正确，无法识别`, true);
+                    return;
+                }
+
+                if (importedData && importedData.length > 0 && importedData.every(r => r.tasks && r.tasks.length === TASK_COLS && r.status !== undefined && r.account !== undefined)) {
+                    if (confirm(`导入将覆盖当前所有数据（共${importedData.length}个账号），所有任务完成进度将会恢复为备份时的状态，是否继续？`)) {
+                        taskData = importedData;
+                        reorderByStatusGroups();
+                        saveToLocal();
+                        renderFullTable();
+                        renderDaily();
+                        showToast(`✅ 成功导入 ${importedData.length} 个账号的完整进度数据`);
+                    }
+                } else {
+                    showToast(`❌ 文件格式不正确，请确保是有效的进度备份文件`, true);
+                }
+            } catch(err) {
+                showToast(`❌ 解析失败，请选择正确的JSON备份文件`, true);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function createEditableInput(value, onUpdate) { 
+        const inp = document.createElement('input'); 
+        inp.type = 'text'; 
+        inp.value = value || ''; 
+        inp.className = 'editable-input'; 
+        inp.addEventListener('blur', () => { if (inp.value !== value) onUpdate(inp.value); }); 
+        inp.addEventListener('keypress', (e) => { if (e.key === 'Enter') inp.blur(); }); 
+        return inp; 
+    }
+
+    function createStatusEditable(value, onUpdate) { 
+        const inp = document.createElement('input'); 
+        inp.type = 'text'; 
+        inp.value = value || ''; 
+        inp.className = 'status-editable'; 
+        if (!document.getElementById('globalStatusDatalist')) {
+            const dl = document.createElement('datalist'); 
+            dl.id = 'globalStatusDatalist'; 
+            ['主号','副号','搬砖号','老板号','待定','仓库号','精英号','新账号'].forEach(opt => { 
+                const op = document.createElement('option'); 
+                op.value = opt; 
+                dl.appendChild(op); 
+            }); 
+            document.body.appendChild(dl); 
+        } 
+        inp.setAttribute('list', 'globalStatusDatalist'); 
+        inp.addEventListener('blur', () => { if (inp.value !== value) onUpdate(inp.value); }); 
+        inp.addEventListener('keypress', (e) => { if (e.key === 'Enter') inp.blur(); }); 
+        return inp; 
+    }
+
+    function createTaskToggleButton(rowIdx, taskColIdx, status) {
+        const btn = document.createElement('button');
+        btn.className = `task-toggle-btn ${status === '已完成' ? 'completed' : 'incomplete'}`;
+        btn.textContent = status === '已完成' ? '✅ 已完成' : '⭕ 未完成';
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleTaskStatus(rowIdx, taskColIdx);
+        });
+        return btn;
+    }
+
+    function createDragHandle(rowIdx) {
+        const handle = document.createElement('span');
+        handle.className = 'drag-handle';
+        handle.innerHTML = '⋮⋮';
+        handle.title = '拖动调整同分类内顺序';
+        handle.setAttribute('draggable', 'true');
+        handle.setAttribute('data-row-index', rowIdx);
+        
+        handle.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', rowIdx);
+            e.dataTransfer.effectAllowed = 'move';
+            handle.classList.add('dragging');
+        });
+        
+        handle.addEventListener('dragend', (e) => {
+            handle.classList.remove('dragging');
+            document.querySelectorAll('#tableBody tr').forEach(tr => {
+                tr.classList.remove('drag-over-top', 'drag-over-bottom');
+            });
+        });
+        
+        return handle;
+    }
+
+    function makeRowDropTarget(tr, targetRowIdx) {
+        tr.setAttribute('data-row-idx', targetRowIdx);
+        
+        tr.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const rect = tr.getBoundingClientRect();
+            const mouseY = e.clientY;
+            const midPoint = rect.top + rect.height / 2;
+            tr.classList.remove('drag-over-top', 'drag-over-bottom');
+            if (mouseY < midPoint) {
+                tr.classList.add('drag-over-top');
+            } else {
+                tr.classList.add('drag-over-bottom');
+            }
+        });
+        
+        tr.addEventListener('dragleave', () => {
+            tr.classList.remove('drag-over-top', 'drag-over-bottom');
+        });
+        
+        tr.addEventListener('drop', (e) => {
+            e.preventDefault();
+            tr.classList.remove('drag-over-top', 'drag-over-bottom');
+            const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+            const toIdx = targetRowIdx;
+            if (isNaN(fromIdx) || isNaN(toIdx) || fromIdx === toIdx) return;
+            
+            const rect = tr.getBoundingClientRect();
+            const mouseY = e.clientY;
+            const midPoint = rect.top + rect.height / 2;
+            let targetInsertIdx = toIdx;
+            if (mouseY >= midPoint) {
+                targetInsertIdx = toIdx + 1;
+            }
+            let finalFromIdx = fromIdx;
+            let finalToIdx = targetInsertIdx;
+            if (fromIdx < targetInsertIdx) {
+                finalToIdx = targetInsertIdx - 1;
+            }
+            moveRowWithinGroup(finalFromIdx, finalToIdx);
+        });
+    }
+
+    function renderHeader() { 
+        const thead = document.getElementById('tableHeader'); 
+        if (!thead) return; 
+        thead.innerHTML = '';
+        const row1 = document.createElement('tr'), row2 = document.createElement('tr');
+        const thDrag = document.createElement('th'); thDrag.rowSpan = 2; thDrag.innerText = '🖱️'; thDrag.style.minWidth = '40px';
+        const thStatus = document.createElement('th'); thStatus.rowSpan = 2; thStatus.innerText = '状态'; thStatus.style.minWidth = '80px';
+        const thJob = document.createElement('th'); thJob.rowSpan = 2; thJob.innerText = '职业';
+        const thAcc = document.createElement('th'); thAcc.rowSpan = 2; thAcc.innerText = '账号ID';
+        row1.append(thDrag, thStatus, thJob, thAcc);
+        columnGroups.forEach(g => { 
+            const th = document.createElement('th'); 
+            th.colSpan = g.cols.length; 
+            th.className = 'category-main'; 
+            th.innerHTML = g.name; 
+            row1.appendChild(th); 
+        });
+        columnGroups.forEach(g => { 
+            g.cols.forEach(c => { 
+                const th = document.createElement('th'); 
+                th.innerText = c; 
+                row2.appendChild(th); 
+            }); 
+        });
+        const thAct = document.createElement('th'); thAct.rowSpan = 2; thAct.className = 'stat-cell'; thAct.innerText = '⚙️ 操作';
+        row1.append(thAct); 
+        thead.append(row1, row2);
+    }
+
+    function renderTableBody() {
+        const tbody = document.getElementById('tableBody'); 
+        if (!tbody) return; 
+        tbody.innerHTML = '';
+        const mergeMap = []; 
+        let i = 0; 
+        while (i < taskData.length) { 
+            let j = i; 
+            while (j < taskData.length && taskData[j].status === taskData[i].status) j++; 
+            mergeMap.push({ status: taskData[i].status, start: i, rowspan: j - i }); 
+            i = j; 
+        }
+        
+        for (let idx = 0; idx < taskData.length; idx++) {
+            const row = taskData[idx]; 
+            const mergeInfo = mergeMap.find(m => idx >= m.start && idx < m.start + m.rowspan); 
+            const isMergeStart = mergeInfo && mergeInfo.start === idx;
+            const tr = document.createElement('tr');
+            
+            const tdDrag = document.createElement('td');
+            tdDrag.style.verticalAlign = 'middle';
+            tdDrag.style.textAlign = 'center';
+            tdDrag.style.width = '40px';
+            tdDrag.appendChild(createDragHandle(idx));
+            tr.appendChild(tdDrag);
+            
+            if (isMergeStart && mergeInfo) { 
+                const td = document.createElement('td'); 
+                td.setAttribute('rowspan', mergeInfo.rowspan); 
+                td.style.verticalAlign = 'middle'; 
+                td.style.background = '#f9efdb'; 
+                td.appendChild(createStatusEditable(row.status, v => updateStatus(idx, v))); 
+                tr.appendChild(td); 
+            } else if (!isMergeStart && mergeInfo) { 
+            } else { 
+                const td = document.createElement('td'); 
+                td.appendChild(createStatusEditable(row.status, v => updateStatus(idx, v))); 
+                tr.appendChild(td); 
+            }
+            
+            const tdJob = document.createElement('td'); 
+            tdJob.appendChild(createEditableInput(row.job, v => updateJob(idx, v))); 
+            tr.appendChild(tdJob);
+            
+            const tdAcc = document.createElement('td'); 
+            tdAcc.appendChild(createEditableInput(row.account, v => updateAccount(idx, v))); 
+            tr.appendChild(tdAcc);
+            
+            for (let t = 0; t < TASK_COLS; t++) { 
+                const td = document.createElement('td'); 
+                td.appendChild(createTaskToggleButton(idx, t, row.tasks[t])); 
+                tr.appendChild(td); 
+            }
+            
+            const tdAct = document.createElement('td'); 
+            tdAct.className = 'stat-cell'; 
+            const delBtn = document.createElement('button'); 
+            delBtn.innerText = '🗑️ 删除'; 
+            delBtn.className = 'delete-row-btn'; 
+            delBtn.addEventListener('click', () => deleteRow(idx)); 
+            tdAct.appendChild(delBtn); 
+            tr.appendChild(tdAct);
+            
+            makeRowDropTarget(tr, idx);
+            tbody.appendChild(tr);
+        }
+    }
+
+    function renderFullTable() { 
+        renderHeader(); 
+        renderTableBody();
+    }
+
+    function showToast(msg, isWarning = false) { 
+        const toast = document.createElement('div'); 
+        toast.className = 'toast-message'; 
+        toast.textContent = msg; 
+        document.body.appendChild(toast); 
+        setTimeout(() => toast.remove(), 2000); 
+    }
+
+    const modal = document.getElementById('addAccountModal');
+    const addBtn = document.getElementById('addNewRowBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalCancel = document.getElementById('modalCancelBtn');
+    const modalConfirm = document.getElementById('modalConfirmBtn');
+    const jobInput = document.getElementById('jobInput');
+    const accountInput = document.getElementById('accountInput');
+    const errorSpan = document.getElementById('modalError');
+    function getSelectedStatus() { 
+        const selected = document.querySelector('input[name="accountStatus"]:checked'); 
+        return selected ? selected.value : "主号"; 
+    }
+    function openModal() { 
+        modal.classList.add('active'); 
+        errorSpan.innerHTML = ''; 
+        jobInput.value = '?'; 
+        accountInput.value = '新角色'; 
+        document.querySelector('input[value="主号"]').checked = true; 
+    }
+    function closeModal() { modal.classList.remove('active'); }
+    function confirmAdd() {
+        const status = getSelectedStatus(); 
+        let job = jobInput.value.trim(); 
+        let account = accountInput.value.trim();
+        if (account === '') account = '新角色';
+        if (job === '') job = '?';
+        if (account.length > 20) { 
+            errorSpan.innerHTML = '⚠️ 账号ID不宜超过20个字符'; 
+            return; 
+        }
+        addNewRowFromModal(status, job, account);
+        closeModal();
+    }
+    addBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    modalCancel.addEventListener('click', closeModal);
+    modalConfirm.addEventListener('click', confirmAdd);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    document.getElementById('exportDataBtn')?.addEventListener('click', exportData);
+    const importBtn = document.getElementById('importDataBtn');
+    const fileInput = document.getElementById('importFileInput');
+    importBtn?.addEventListener('click', () => fileInput.click());
+    fileInput?.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+            importData(e.target.files[0]);
+            fileInput.value = '';
+        }
+    });
+    document.getElementById('resetAllProgressBtn')?.addEventListener('click', () => { 
+        if (confirm('确定将所有任务的进度重置为“未完成”吗？')) resetAllProgress(); 
+    });
+
+    const DAILY_COLS = ["主C", "奶", "T", "混子"];
+    let dailyLeftData = JSON.parse(localStorage.getItem('dailyLeftData')) || DAILY_COLS.map(() => []);
+    let dailyRightData = JSON.parse(localStorage.getItem('dailyRightData')) || DAILY_COLS.map(() => []);
+    let currentDailyCol = -1;
+
+    const dailyAddModal = document.getElementById('dailyAddModal');
+    const dailyAddInput = document.getElementById('dailyAddInput');
+    const dailyAddCancel = document.getElementById('dailyAddCancel');
+    const dailyAddOk = document.getElementById('dailyAddOk');
+
+    function saveDailyToLocal() {
+        localStorage.setItem('dailyLeftData', JSON.stringify(dailyLeftData));
+        localStorage.setItem('dailyRightData', JSON.stringify(dailyRightData));
+    }
+
+    // ✅ 保存模板增加确认提示，防止误触 (核心需求)
+    function saveDailyAsTemplate() {
+        if (!confirm('⚠️ 确定要将当前日常区所有账号保存为模板吗？\n这将覆盖之前的模板，请谨慎操作。')) {
+            return;
+        }
+        const template = {
+            left: JSON.parse(JSON.stringify(dailyLeftData)),
+            right: JSON.parse(JSON.stringify(dailyRightData)),
+            saveTime: new Date().toISOString()
+        };
+        localStorage.setItem('dailyAccountTemplate', JSON.stringify(template));
+        localStorage.setItem('lastAutoResetDate', new Date().toDateString());
+        showToast('💾 已保存当前所有日常账号为模板，后续可一键还原！');
+    }
+
+    function loadDailyFromTemplate() {
+        const template = localStorage.getItem('dailyAccountTemplate');
+        if (!template) {
+            showToast('⚠️ 未找到模板，请先点击「保存当前为模板」', true);
+            return;
+        }
+        const parsed = JSON.parse(template);
+        dailyLeftData = JSON.parse(JSON.stringify(parsed.left || DAILY_COLS.map(() => [])));
+        dailyRightData = JSON.parse(JSON.stringify(parsed.right || DAILY_COLS.map(() => [])));
+        saveDailyToLocal();
+        renderDaily();
+        showToast('🔄 已从模板一键还原所有日常账号！');
+    }
+
+    function checkDailyAutoReset() {
+        const lastDate = localStorage.getItem('lastAutoResetDate');
+        const today = new Date().toDateString();
+        if (lastDate !== today) {
+            if (localStorage.getItem('dailyAccountTemplate')) {
+                loadDailyFromTemplate();
+                localStorage.setItem('lastAutoResetDate', today);
+                showToast('🌅 新的一天，日常账号已自动还原！');
+            }
+        }
+    }
+
+    function renderDaily() {
+        const leftGrid = document.getElementById('dailyLeftGrid');
+        const rightGrid = document.getElementById('dailyRightGrid');
+        leftGrid.innerHTML = '';
+        rightGrid.innerHTML = '';
+
+        DAILY_COLS.forEach((colName, colIdx) => {
+            const leftCol = createDailyColumn(true, colIdx, colName);
+            const rightCol = createDailyColumn(false, colIdx, colName);
+            leftGrid.appendChild(leftCol);
+            rightGrid.appendChild(rightCol);
+        });
+    }
+
+    function createDailyColumn(isLeft, colIdx, colName) {
+        const col = document.createElement('div');
+        col.className = 'daily-column';
+        col.innerHTML = `<div class="column-header">${colName}</div>`;
+
+        const dataList = isLeft ? dailyLeftData : dailyRightData;
+        const items = dataList[colIdx] || [];
+
+        items.forEach((name, idx) => {
+            const item = createDailyItem(isLeft, colIdx, idx, name);
+            col.appendChild(item);
+        });
+
+        if (isLeft) {
+            const addBtn = document.createElement('button');
+            addBtn.className = 'daily-add-btn';
+            addBtn.textContent = '➕ 添加';
+            addBtn.onclick = () => {
+                currentDailyCol = colIdx;
+                dailyAddModal.classList.add('show');
+                dailyAddInput.value = '';
+                dailyAddInput.focus();
+            };
+            col.appendChild(addBtn);
+        }
+
+        return col;
+    }
+
+    function createDailyItem(isLeft, colIdx, idx, name) {
+        const item = document.createElement('div');
+        item.className = 'account-item';
+        item.textContent = name;
+        item.draggable = true;
+
+        const delBtn = document.createElement('div');
+        delBtn.className = 'del-btn';
+        delBtn.textContent = '×';
+        delBtn.onclick = (e) => {
+            e.stopPropagation();
+            if(confirm('确定删除该账号？')){
+                if(isLeft) dailyLeftData[colIdx].splice(idx,1);
+                else dailyRightData[colIdx].splice(idx,1);
+                saveDailyToLocal();
+                renderDaily();
+                showToast('已删除账号');
+            }
+        };
+        item.appendChild(delBtn);
+
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', JSON.stringify({ isLeft, colIdx, idx }));
+            item.style.opacity = '0.5';
+        });
+
+        item.addEventListener('dragend', () => {
+            item.style.opacity = '1';
+            document.querySelectorAll('.account-item').forEach(el => {
+                el.classList.remove('drag-over-top', 'drag-over-bottom');
+            });
+        });
+
+        item.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const rect = item.getBoundingClientRect();
+            const y = e.clientY - rect.top;
+            item.classList.remove('drag-over-top', 'drag-over-bottom');
+            if (y < rect.height / 2) item.classList.add('drag-over-top');
+            else item.classList.add('drag-over-bottom');
+        });
+
+        item.addEventListener('drop', (e) => {
+            e.preventDefault();
+            item.classList.remove('drag-over-top', 'drag-over-bottom');
+            const source = JSON.parse(e.dataTransfer.getData('text/plain'));
+            const target = { isLeft, colIdx, idx };
+
+            if (source.isLeft !== target.isLeft || source.colIdx !== target.colIdx) return;
+
+            const list = source.isLeft ? dailyLeftData[source.colIdx] : dailyRightData[source.colIdx];
+            const moved = list.splice(source.idx, 1)[0];
+            const insertPos = target.idx + (e.clientY - item.getBoundingClientRect().top > item.offsetHeight / 2 ? 1 : 0);
+            list.splice(insertPos, 0, moved);
+
+            saveDailyToLocal();
+            renderDaily();
+        });
+
+        if (isLeft) {
+            item.onclick = () => moveLeftToRight(colIdx, idx);
+        } else {
+            item.onclick = () => removeRightAccount(colIdx, idx);
+        }
+
+        return item;
+    }
+
+    dailyAddCancel.onclick = () => {
+        dailyAddModal.classList.remove('show');
+    };
+    dailyAddOk.onclick = () => {
+        const name = dailyAddInput.value.trim();
+        if(!name){
+            showToast('请输入账号名称');
+            return;
+        }
+        dailyLeftData[currentDailyCol].push(name);
+        saveDailyToLocal();
+        renderDaily();
+        dailyAddModal.classList.remove('show');
+        showToast(`✅ 已添加账号：${name}`);
+    };
+
+    function moveLeftToRight(colIdx, idx) {
+        const name = dailyLeftData[colIdx].splice(idx, 1)[0];
+        dailyRightData[colIdx].push(name);
+        saveDailyToLocal();
+        renderDaily();
+        showToast(`【${name}】已进入出战区`);
+    }
+
+    function removeRightAccount(colIdx, idx) {
+        const name = dailyRightData[colIdx].splice(idx, 1)[0];
+        saveDailyToLocal();
+        renderDaily();
+        showToast(`【${name}】已退出出战区`);
+    }
+
+    document.querySelectorAll('.page-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const page = btn.dataset.page;
+            document.getElementById('zhouPage').style.display = page === 'zhou' ? 'block' : 'none';
+            document.getElementById('dailyPage').style.display = page === 'daily' ? 'block' : 'none';
+        });
+    });
+
+    document.getElementById('saveDailyTemplate').addEventListener('click', saveDailyAsTemplate);
+    document.getElementById('loadDailyTemplate').addEventListener('click', loadDailyFromTemplate);
+
+    renderFullTable();
+    renderDaily();
+    checkDailyAutoReset();
+    setInterval(checkDailyAutoReset, 60000);
+</script>
+</body>
+</html>
